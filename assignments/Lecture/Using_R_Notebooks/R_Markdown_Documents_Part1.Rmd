@@ -1,0 +1,22 @@
+---
+title: "R Markdown Documents - Part 1"
+subtitle: "Analysis of Environmental Data"
+author: "Julia Vineyard"
+date: "9/9/2021"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+# Introduction
+My name is __Julia Vineyard__ and I am an _ECo_ graduate student in Dr. Allison Roy's lab. I am studying Bog turtles in the state of MA through their habitat use, overall population, and changes in each over the last 30 years.
+
+# Concepts List
+1. Basic statitics refresher
+2. How to use R
+3. Tools I can use in R for my research
+
+# Course List
+* Landscape Ecology
+* Environmental Leadership in Action
