@@ -1,0 +1,370 @@
+---
+title: "Final Project R Reference"
+author: "Julia Vineyard"
+date: "12/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R Reference Guide {.tabset .tabset-pills}
+
+## Loading Data and Packages
+
+### here()
+* here() lets you direct R to where you data is located in your directory
+
+* To load here() you must use require(here) first
+
+* Using here() first also tells you where R is currently pulling your data from
+
+```{r warning= FALSE}
+require(here)
+```
+
+
+### read.csv()
+
+* Then you can combine here() with read.csv() to make a dataframe and bring it into the environment
+
+* read.csv() allows R to read the data file that you are directing it to into a dataframe
+
+* You can name the dataframe whatever you want
+
+```{r warning= FALSE}
+ginkgo= read.csv(here("data", "ginkgo_data_2021.csv"))
+```
+
+### library() 
+
+* The library() function is another way to bring in a package, but only from the R directory
+
+* You can name the dataframe whatever you want
+
+```{r warning=FALSE}
+palmer_penguins= library(palmerpenguins)
+```
+
+## Data Structures
+
+### c()
+The function c() combines or concatenates its arguments into a vector (a 1-dimensional data structure consisting of 1 or more elements).
+
+* All of the elements must be of the same type
+* I can't combine character and numeric types in the same call to c()
+
+Here's two examples using numeric and character data types:
+
+```{r}
+## Create a vector of numbers:
+num_vec  = c(1, 4, 8, 9, 13)
+
+## Create a vector of characters:
+char_vec = c("a", "fish", "data is cool")
+```
+
+You can show the contents of a vector by typing the name of the vector, or using the print() function.
+
+```{r}
+## Typing the name of the vector into the console prints the contents
+num_vec
+```
+
+```{r}
+## The print() function accomplishes the same task: 
+print(char_vec)
+```
+
+### length()
+
+The length() function allows you to see how many pieces are in a list or other object in your environment.
+
+
+```{r}
+length(char_vec)
+
+length(num_vec)
+```
+
+### matrix()
+The matrix() function allow you to create a matrix from a given set of values or a vector.
+
+```{r}
+matrix(num_vec)
+
+matrix(1:8)
+```
+
+You can also specify the number of rows and columns in a matrix. 
+
+```{r}
+matrix(1:8, ncol=2, nrow=4)
+```
+
+R defaults to filling the matrix by columns, but you can change it to fill by row.
+
+```{r}
+matrix(1:8, ncol=2, nrow=4, byrow=TRUE)
+```
+
+### data.frame()
+The data.frame() allows you to load data into R's environment as a collection of variables. 
+A data frame can store many different types of data into 1 data frame, while a matrix is limited to only 1 type of data (usually numbers). 
+
+```{r}
+num_data= data.frame(num_vec)
+
+char_data= data.frame(char_vec)
+```
+Now that the data is in a data frame you can view it as a collection, rather than a string of numbers.
+
+```{r}
+num_data
+num_vec
+```
+
+### nrow()
+The nrow() function produces the number of rows in the data frame (or matrix) you input.
+
+```{r}
+nrow(ginkgo)
+```
+
+### ncol()
+Then ncol() function produes the number of columns in the data frame (or matrix) you input.
+
+```{r}
+ncol(ginkgo)
+```
+
+### dim()
+The dim() function produces the dimensions of the data frame (or matrix) you input.
+
+```{r}
+dim(ginkgo)
+```
+
+## Subsetting
+
+### $
+Using the $ to subset allows you to pull out a specific named part of the data.
+
+```{r}
+width= ginkgo$max_width
+```
+
+### []
+Using [] to subset allows you to pull out an object from the data.
+To select the first row of the ginkgo data:
+
+```{r}
+ginkgo[1]
+```
+
+To select the element in row 2, column 3
+
+```{r}
+ginkgo[2,3]
+```
+
+To select the 3rd column of the ginkgo data
+
+```{r}
+ginkgo[,3]
+```
+
+### subset()
+The subset() function allows you to pull out data based on a criteria that you set.
+To retrieve all the data for Adelie penguins from the penguins dataset:
+```{r}
+dat_adelie=subset(penguins, species=="Adelie")
+```
+
+## Numerical Data Exploration
+
+### summary()
+The summary() function gives you an overview of what the data contains for all data types.
+```{r}
+summary(penguins)
+```
+From this summary you can see that there are 124 Gentoo penguins listed in the species column and 52 rows of data listed as Torgersen island.
+
+### mean()
+The mean() function calculates the mean of the data you specify. 
+
+```{r}
+mean(ginkgo$max_depth)
+```
+If you have a dataset that contains NAs, you must add in na.rm=TRUE
+```{r}
+mean(penguins$body_mass_g, na.rm=TRUE)
+```
+
+### sd()
+The sd() function calculates the standard deviation of the data you specify.
+```{r}
+sd(ginkgo$max_depth)
+```
+If you have a dataset that contains NAs, you must add in na.rm=TRUE
+```{r}
+sd(penguins$body_mass_g, na.rm=TRUE)
+```
+
+## Graphical Data Exploration
+
+### plot() 
+The plot() function allows you to create a scatterplot of the data you specify.
+
+```{r}
+plot(max_width ~ max_depth, data=ginkgo)
+```
+
+
+You can assign many different arguments for the plot() function including:
+
+* col=
+Allows you to specify the color
+* pch=
+Allows you to change the shape of the plotting character
+* cex=
+Allows you to change the size of the plotting character
+* main=
+Allows you to label the plot (title)
+* xlab=
+Allows you to label the x-axis
+* ylab=
+Allows you to label the y-axis
+* xlim=
+Allows you to set the limits of the x-axis
+* ylim=
+Allows you to set the limits of the y-axis
+
+```{r}
+plot(max_width ~ max_depth, data=ginkgo, col="blue", pch=5,
+     cex=2, main="Ginkgo Leaf Measurements",
+     xlab= "Max Depth", ylab= "Max Width",
+     xlim=c(0,160), ylim=c(0,140))
+```
+
+### hist()
+This hist() function allows you to make a histogram from the data you specify.
+```{r}
+hist(penguins$flipper_length_mm, xlab="Flippger Length", main="Penguin Flipper Length mm")
+```
+
+* breaks=
+Allows you to change the number of bars the histogram breaks the data into.
+
+You can get a more detailed representation of the data with a greater number of breaks.
+
+```{r}
+hist(penguins$flipper_length_mm, breaks=30, xlab="Flippger Length", main="Penguin Flipper Length mm")
+```
+
+
+### boxplot()
+The boxplot() function allows you to make a boxplot from the data you specify.
+
+To create a simple boxplot of the Ginkgo petiole length:
+
+```{r}
+boxplot(ginkgo$petiole_length, xlab="petiole_length (mm)", main="Ginkgo Petiole Length")
+```
+
+To create a conditional boxplot showing the continuous variable of notch depth conditioned on the seeds_present column:
+
+```{r}
+boxplot(notch_depth ~ seeds_present, data=ginkgo, xlab="seeds_present", ylab= "notch_depth (mm)", main="Ginkgo Notch Depth Conditioned on Seed Presence")
+```
+
+
+### par(mfrow=)
+The par() function combined with the mfrow= argument allows you to set the layout of the graphs you want to see at one time
+
+Set mfrow=c(NUMBER OF ROWS, NUMBER OF COLUMNS) you want to have displayed
+
+```{r}
+par(mfrow= c(2,2))
+
+hist(penguins$bill_length_mm, xlab="Bill Length (mm)", main="Penguin Bill Length",
+     col="red")
+     
+hist(penguins$body_mass_g, breaks = 80, main = "Penguin Body Mass", 
+     xlab = "Body Mass (g)", col="green")
+     
+hist(penguins$flipper_length_mm,
+     ylim = c(0,50),
+     main="Penguin Flipper Length",
+     xlab="Flipper Length (mm)",
+     col= "green")
+
+hist(penguins$bill_depth_mm,
+     main="Penguin Bill Depth",
+     xlab="Bill Depth (mm)",
+     col= "red")
+
+dev.off()
+```
+
+
+## Distribution Functions
+
+* dnorm(): the probability density, height of the curve
+
+```{r}
+dnorm(-1.96, mean=0, sd=1)
+```
+
+* pnorm()l: the cumulative probability density, area underneath the curve
+```{r}
+pnorm(-1.96, mean=0, sd=1)
+```
+
+* qnorm(): the quantile function
+
+  You assign a probability and R gives you the boundary value
+
+  If you want to find the 85th percentile of a normal distribution that has a mean of 70 and standard deviation of 3:
+
+```{r}
+qnorm(0.85,mean=70,sd=3)
+```
+
+* dbinom(): the probability mass function
+
+  Allows you to ask: what is the probability that I observe a value of exactly x?
+
+  Observing a count of exactly 3 successes, n=4, p=0.75
+ 
+```{r}
+ dbinom(3, 4, 0.75)
+```
+
+* pbinom(): the cumulative mass function
+
+  Allows you to ask: what is the probability that I observe a value of x or less?
+
+  observing a count of 3 or less, n=4, p=0.75 (3 or less includes 3)
+  
+```{r}
+pbinom(3, 4, 0.75)
+```
+
+  observing more than 3, n=5, p=0.75 (more than 3 does not include 3)
+
+```{r}
+1- pbinom(3, 5, 0.75)
+```
+
+* qbinom(): the quantile function
+
+  Allows you to ask: what is the median or 50th percentile?
+  
+  If you want to find the 10th quantile of a binomial distribution with 10 trials and probability of success on each trial = 0.4
+  
+
+```{r}
+qbinom(.10, size=10, prob=.4)
+```

@@ -1,0 +1,216 @@
+---
+title: "Final Project Data Analysis"
+author: "Julia Vineyard"
+date: "12/15/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Worked with: Juliana Berube & Jessica Bonin
+
+# Numerical Exploration
+
+
+```{r}
+require(here)
+delomys= read.csv(here("data", "delomys.csv"))
+
+summary(delomys$body_mass)
+
+shapiro.test(delomys$body_mass)
+
+
+summary(delomys$body_length)
+
+shapiro.test(delomys$body_length)
+```
+
+
+#Conclude that the data were not sampled from a normally distributed population (reject the null)
+
+# Graphical Exploration
+
+```{r fig.width=8}
+
+
+require(palmerpenguins)
+
+
+plot(bill_length_mm ~ body_mass_g, data = penguins)
+
+```
+
+
+```{r}
+plot(body_length ~ body_mass, data= delomys)
+```
+
+
+```{r}
+hist(delomys$body_mass)
+```
+
+
+```{r}
+hist(delomys$body_length)
+```
+
+```{r}
+boxplot(body_mass ~ binomial, data=delomys)
+```
+
+```{r}
+boxplot(body_mass ~ sex, data=delomys)
+```
+
+```{r}
+boxplot(formula= body_mass ~ sex * binomial, data=delomys)
+```
+
+
+## Question 1
+  The relationship between body mass and body length appears to be a positive linear relationship. 
+
+## Question 2
+The histogram of body mass appears to be normally distributed since it has a clear bell shape. The histogram of body length does not appear to be normally distributed as it has a skew to the left. 
+
+## Question 3
+The shapiro test reveals that neither of the data sets are normally distributed since there is a significant p-value. This is different from the visual assessment that the body mass is normally distributed, but supports the visual assessment that the body length is not normally distributed.
+
+## Question 4
+The conditional boxplots show that overall the dorsalis species has a greater body mass than the sublineatus species. The second boxplot show that when the species are accounted together the males are heavier than the females. The conditional boxplot supports that the dorsalis species is overall heavier, and that the males have a greater body mass than the females for each species. 
+
+# Model Diagnostics
+
+```{r}
+fit1= lm(body_length ~ body_mass, data=delomys)
+
+fit2= lm(body_mass ~ sex, data=delomys)
+
+fit3= lm(body_mass ~ binomial, data=delomys)
+
+fit4= lm(body_mass ~ sex + binomial, data=delomys)
+
+fit5= lm(body_mass ~sex * binomial, data=delomys)
+```
+
+
+```{r}
+anova(fit2)
+
+anova(fit3)
+
+anova(fit4)
+
+anova(fit5)
+```
+
+
+```{r}
+hist(residuals(fit1))
+
+hist(residuals(fit2))
+
+hist(residuals(fit3))
+
+hist(residuals(fit4))
+
+hist(residuals(fit5))
+
+```
+
+```{r}
+shapiro.test(residuals(fit1))
+
+shapiro.test(residuals(fit2))
+
+shapiro.test(residuals(fit3))
+
+shapiro.test(residuals(fit4))
+
+shapiro.test(residuals(fit5))
+
+```
+
+## Question 5
+Based on the visual assessment all of the histrograms except fit1 appear to be normally distributed. However, each of the shapiro tests of the residuals results in a significant p-value meaning that the data are not normally distributed. 
+
+## Question 6
+No, based on the shapiro test fit2 is not as severly violating the normality assumption. 
+
+# Model Interpretation
+
+```{r}
+coef(summary(fit1))
+
+coef(summary(fit2))
+
+coef(summary(fit3))
+
+coef(summary(fit4))
+
+coef(summary(fit5))
+```
+
+## Question 7
+The magnitude of the mass/length relationship is 77.002.
+
+## Question 8
+The expected body length is 163.67 g
+
+## Question 9
+The expected body length is 76.12 
+
+## Question 10
+The base level is Female
+
+## Question 11
+The base level is Delomys dorsalis 
+
+#Question 12
+The Male is heavier
+
+## Question 13
+Delomys dorsalis is heavier
+
+
+```{r}
+anova(fit1)
+
+anova(fit2)
+
+anova(fit3)
+
+anova(fit4)
+
+anova(fit5)
+```
+
+## Question 14
+Yes sex and species are significant predictors
+
+## Question 15
+No there is not a signifanct interaction
+
+## Question 16
+All of the p-values are significant except for the interactive model.
+
+```{r}
+AIC(fit2)
+
+AIC(fit3)
+
+AIC(fit4)
+
+AIC(fit5)
+```
+
+## Question 17
+Excluding fit1, the two models with the  lowest AIC scores are fit4 and fit5.
+
+## Question 18
+I would choose fit4 due to the more direct interaction and the fact that it has the lowest AIC. To understand fit5 you must know how the interaction impacts the body mass, whereas with fit4 you do not need to understand the interaction.
+
