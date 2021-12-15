@@ -11,8 +11,4 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Welcome to Julia's class page!
 
-
-```{r}
-
-```
 [Final Project: R Reference Guide](final_R_reference.html)
